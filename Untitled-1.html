@@ -1,0 +1,60 @@
+<!-- templates/dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <style>
+        /* Basic styling for better appearance */
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1, h2 { color: #333; }
+        form { margin-bottom: 20px; }
+        input[type="text"], input[type="password"] { padding: 8px; width: 300px; }
+        button { padding: 8px 16px; }
+        .error { color: red; }
+        .success { color: green; }
+        video, iframe { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Welcome, {{ session['username'] }}!</h1>
+    
+    <h2>Available Wi-Fi Networks</h2>
+    <form method="POST">
+        <ul>
+            {% for ssid in wifi_networks %}
+                <li>
+                    <input type="radio" name="ssid" value="{{ ssid }}"> {{ ssid }}
+                </li>
+            {% endfor %}
+        </ul>
+        <input type="password" name="password" placeholder="Wi-Fi Password" required>
+        <button type="submit">Connect</button>
+    </form>
+    
+    {% if connection_status %}
+        <p class="success">Connected to {{ connected_ssid }}</p>
+    {% elif connection_error %}
+        <p class="error">Failed to connect to {{ request.form.get('ssid') }}</p>
+    {% endif %}
+    
+    <h2>Play Video</h2>
+    <form method="POST">
+        <input type="text" name="video_url" placeholder="Enter Video URL" value="{{ video_url or '' }}" required>
+        <button type="submit" name="play_video">Play</button>
+    </form>
+    
+    {% if video_url %}
+        {% if 'youtube.com' in video_url or 'youtu.be' in video_url %}
+            <iframe width="640" height="480" src="https://youtu.be/pkBYegMQwyI?si=t1YnMss-kr3LzXCT" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        {% else %}
+            <video width="640" height="480" controls>
+                <source src="https://youtu.be/pkBYegMQwyI?si=t1YnMss-kr3LzXCT" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        {% endif %}
+    {% endif %}
+    
+    <a href="{{ url_for('profile') }}">Profile</a> | <a href="{{ url_for('logout') }}">Logout</a>
+</body>
+</html>

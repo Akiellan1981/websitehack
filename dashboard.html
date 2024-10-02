@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Welcome to the Dashboard</h1>
+
+    <form method="POST" action="{{ url_for('dashboard') }}">
+        <label for="video_url">Enter YouTube Video URL:</label>
+        <input type="text" id="video_url" name="video_url" required>
+        <button type="submit" name="play_video">Play Video</button>
+    </form>
+
+    {% if video_url %}
+    <h2>Video</h2>
+    <iframe width="800" height="500" src="{{ video_url }}" frameborder="0" allowfullscreen></iframe>
+    {% endif %}
+    
+    <h2>Live Camera Stream</h2>
+    <iframe width="800" height="500" src="{{ video_url }}" frameborder="0" allowfullscreen></iframe>
+
+    <h2>Available Wi-Fi Networks</h2>
+    <form method="POST" action="{{ url_for('dashboard') }}">
+        <select name="ssid">
+            {% for network in wifi_networks %}
+            <option value="{{ network }}">{{ network }}</option>
+            {% endfor %}
+        </select>
+        <input type="password" name="password" placeholder="Enter Wi-Fi Password">
+        <button type="submit">Connect</button>
+        <button type="submit" name="refresh">Refresh Networks</button>
+    </form>
+
+    {% if connection_status %}
+    <p>Connected to {{ connected_ssid }}</p>
+    {% elif connection_error %}
+    <p>Error connecting to Wi-Fi.</p>
+    {% endif %}
+</body>
+</html>
